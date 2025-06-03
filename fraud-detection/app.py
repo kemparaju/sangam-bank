@@ -10,15 +10,15 @@ import uvicorn
 # Define the Pydantic model for the request body
 class TransData(BaseModel):
     transaction_id: int
-    trans_type_ID: int
+    tran_type_id: int
     transaction_amount: int
-    trans_date: datetime
+    tran_date: datetime
     status_type_id: int
     from_acc_id: int
     to_acc_id: int
 
-    @validator('trans_type_ID')
-    def validate_trans_type_ID(cls, value):
+    @validator('tran_type_id')
+    def validate_tran_type_id(cls, value):
       trans_type_allowed_values = [1, 2]
       if value not in trans_type_allowed_values:
           raise ValueError(f"must be one of: {trans_type_allowed_values}")

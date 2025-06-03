@@ -13,6 +13,6 @@ INSERT INTO public.gender(genderid, gendername)VALUES (1, 'FEMALE');
 INSERT INTO public.gender(genderid, gendername)VALUES (2, 'MALE');
 INSERT INTO public.gender(genderid, gendername)VALUES (3, 'OTHERS');
 
-INSERT INTO public.users(username, user_type_id, gender_id, dob, address, state, country, pincode, email, passwd)VALUES ('mithun', 1, 2, '1987-11-12', 'No30,4th Main,5th cross,Bogadi', 'Karnataka', 'India', '570026','mithun.hallikere@gmail.com', '1246744352');
+INSERT INTO public.users(username, user_type_id, gender_id, dob, address, state, country, pincode, email, passwd, phone)VALUES ('mithun', 1, 2, '1987-11-12', 'No30,4th Main,5th cross,Bogadi', 'Karnataka', 'India', '570026','mithun.hallikere@gmail.com', '1246744352', '7349079468');
 
 INSERT INTO public.bank(bank_id, bankname, ifsc, email, address, state, country, pincode)VALUES (1, 'FUTUREBANK', 'FUTU00001', 'futurebank@future.com', 'EGL','karnataka', 'India', '570089');

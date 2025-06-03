@@ -41,7 +41,8 @@ CREATE TABLE users (
     country VARCHAR ( 100 ),
     pincode VARCHAR ( 100 ),
     email VARCHAR(100),
-    passwd VARCHAR ( 255 )
+    passwd VARCHAR ( 255 ),
+    phone VARCHAR ( 15 )
 );
 
 ALTER TABLE users
@@ -84,7 +85,8 @@ CREATE TABLE transactions (
 	tran_date Date,
     status_type_id integer,
     from_acc_id integer,
-    to_acc_id integer
+    to_acc_id integer,
+    is_fraudulent boolean
 );
 create table user_pwd(usr_id int , passwd VARCHAR(500));
 ALTER TABLE user_pwd 

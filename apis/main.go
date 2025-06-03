@@ -13,7 +13,8 @@ import (
 
 // DB set up
 func setupDB() *sql.DB {
-	connStr := "postgres://postgres:mynewpassword@postgresql/postgres?sslmode=disable"
+	connStr := "postgres://localhost/bankingref?sslmode=disable"
+	// connStr := "postgres://postgres:mynewpassword@postgresql/postgres?sslmode=disable"
 	//dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", DB_USER, DB_PASSWORD, DB_NAME)
 	db, err := sql.Open("postgres", connStr)
 

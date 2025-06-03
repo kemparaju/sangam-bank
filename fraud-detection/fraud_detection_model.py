@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 import xgboost as xgb
+import psycopg2
 
 # Load your standard scalre
 with open('fraud_model_artifacts/xgb_model.pkl', 'rb') as file:
@@ -16,12 +17,20 @@ model_threshold = 0.7
 
 def get_histoical_trans_df(from_acc_id):
   # sql code to connect and get data
-  return pd.DataFrame()
+  connection = psycopg2.connect(database="bankingref", user="", password="", host="localhost", port=5432)
+  cursor = connection.cursor()
+
+  cursor.execute(f"SELECT * FROM transactions where from_acc_id={int(from_acc_id)}")
+  hist_df = pd.DataFrame(cursor.fetchall(), columns=[desc[0] for desc in cursor.description])
+  cursor.close()
+
+  return hist_df
 
 def generate_agg_feat_df(from_acc_id):
   hist_df = get_histoical_trans_df(from_acc_id)
+
   if not hist_df.empty:
-    fraud_ratio = hist_df.groupby('from_acc_id')['is_fradulent'].mean().rename('fraud_ratio').iloc[0]
+    fraud_ratio = hist_df.groupby('from_acc_id')['is_fraudulent'].mean().rename('fraud_ratio').iloc[0]
     total_transactions_per_account = hist_df.groupby('from_acc_id').size().rename('total_transactions').iloc[0]
     average_amount_per_account = hist_df.groupby('from_acc_id')['transaction_amount'].mean().rename('avg_amount_per_account').iloc[0]
   else:
@@ -42,12 +51,12 @@ def generate_features(df):
   feat_df['log_transaction_amount'] = np.log(feat_df['transaction_amount'] + 1)
 
   # 2. Transaction Date Features (Year, Month, Day of Week, Hour)
-  feat_df['trans_date'] = pd.to_datetime(feat_df['trans_date'])
-  feat_df['trans_year'] = feat_df['trans_date'].dt.year
-  feat_df['trans_month'] = feat_df['trans_date'].dt.month
-  feat_df['trans_day'] = feat_df['trans_date'].dt.day
-  feat_df['trans_day_of_week'] = feat_df['trans_date'].dt.dayofweek
-  feat_df['trans_hour'] = feat_df['trans_date'].dt.hour
+  feat_df['tran_date'] = pd.to_datetime(feat_df['tran_date'])
+  feat_df['trans_year'] = feat_df['tran_date'].dt.year
+  feat_df['trans_month'] = feat_df['tran_date'].dt.month
+  feat_df['trans_day'] = feat_df['tran_date'].dt.day
+  feat_df['trans_day_of_week'] = feat_df['tran_date'].dt.dayofweek
+  feat_df['trans_hour'] = feat_df['tran_date'].dt.hour
 
   # 3. Interaction Features
   feat_df['amount_status_interaction'] = feat_df['transaction_amount'] * feat_df['status_type_id']
@@ -59,16 +68,18 @@ def generate_features(df):
 
   # 5. Encode Categorical Features
   # Simple One Hot Encoding for transactional Type and Status
-  # feat_df = pd.get_dummies(feat_df, columns=['trans_type_ID', 'status_type_id'], prefix=['type', 'status'], drop_first=True)
+  # feat_df = pd.get_dummies(feat_df, columns=['tran_type_id', 'status_type_id'], prefix=['type', 'status'], drop_first=True)
 
   # 6. Fraud Ratio of each from_acc_id
   feat_df["fraud_ratio"] = fraud_ratio
+
+  print(f"{feat_df=}")
 
   return feat_df
 
 def predict_fraud(trans_data):
 
-  skip_cols = ['transaction_id', 'transaction_amount', 'trans_date', 'from_acc_id', 'to_acc_id',]
+  skip_cols = ['transaction_id', 'transaction_amount', 'tran_date', 'from_acc_id', 'to_acc_id',]
 
   # converting dictionary to dataframe
   trans_df = pd.DataFrame(trans_data, index=[0])
@@ -87,7 +98,13 @@ def predict_fraud(trans_data):
   # Predict using the model
   prediction = xgboost_model.predict(scaled_feat_df)
 
+  print(f"{prediction=}")
+
   # Process prediction for response
   is_fraudulent = (prediction > model_threshold).astype(int)
 
   return is_fraudulent
+
+
+if __name__ == "__main__":
+  generate_agg_feat_df(4)

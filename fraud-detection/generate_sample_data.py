@@ -22,7 +22,7 @@ data_df['transaction_id'] = list(range(1, sample_size))
 # trans type
 trans_type = [1, 2] # {1: 'DEBIT', '2':Credit}
 trans_type_prob = [0.7, 0.3]
-data_df['trans_type_ID'] = np.random.choice(trans_type, size=sample_size-1, p=trans_type_prob)
+data_df['tran_type_id'] = np.random.choice(trans_type, size=sample_size-1, p=trans_type_prob)
 
 # transaction amount
 min_amount = 0
@@ -33,7 +33,7 @@ data_df['transaction_amount'] = np.random.uniform(low=min_amount, high=max_amoun
 start_date = pd.to_datetime('2025-01-01 00:00:00')
 end_date = pd.to_datetime('2025-05-31 23:59:59')
 random_integers = np.random.randint(0, int((end_date - start_date).total_seconds()), sample_size-1)
-data_df['trans_date'] = start_date + pd.to_timedelta(random_integers, unit='s')
+data_df['tran_date'] = start_date + pd.to_timedelta(random_integers, unit='s')
 
 # status_type_id
 status_options = [1, 2] # 1: success, 2: failed
@@ -51,10 +51,10 @@ to_id_min_val = 1000
 to_id_max_val = 5000
 data_df['to_acc_id'] = np.random.randint(low=to_id_min_val, high=to_id_max_val, size=sample_size-1)
 
-# is_fradulent
-is_fradulent_flag = [1, 0] # 1: yes, 2: no
-is_fradulent_prob = [0.4, 0.6]
-data_df['is_fradulent'] = np.random.choice(is_fradulent_flag, size=sample_size-1, p=is_fradulent_prob)
+# is_fraudulent
+is_fraudulent_flag = [1, 0] # 1: yes, 2: no
+is_fraudulent_prob = [0.4, 0.6]
+data_df['is_fraudulent'] = np.random.choice(is_fraudulent_flag, size=sample_size-1, p=is_fraudulent_prob)
 
 data_df.shape
 
@@ -62,13 +62,13 @@ data_df.head()
 
 data_df.isnull().sum()
 
-data_df.is_fradulent.value_counts(normalize=True)
+data_df.is_fraudulent.value_counts(normalize=True)
 
-data_df.trans_type_ID.value_counts(normalize=True)
+data_df.tran_type_id.value_counts(normalize=True)
 
 data_df.status_type_id.value_counts(normalize=True)
 
-data_df.sort_values('trans_date').to_parquet('bank_fradulent.parquet', index=False)
+data_df.sort_values('tran_date').to_parquet('bank_fradulent.parquet', index=False)
 
 # feature generation
 
@@ -98,12 +98,12 @@ feat_df = data_df.copy()
 feat_df['log_transaction_amount'] = np.log(feat_df['transaction_amount'] + 1)
 
 # 2. Transaction Date Features (Year, Month, Day of Week, Hour)
-feat_df['trans_date'] = pd.to_datetime(feat_df['trans_date'])
-feat_df['trans_year'] = feat_df['trans_date'].dt.year
-feat_df['trans_month'] = feat_df['trans_date'].dt.month
-feat_df['trans_day'] = feat_df['trans_date'].dt.day
-feat_df['trans_day_of_week'] = feat_df['trans_date'].dt.dayofweek
-feat_df['trans_hour'] = feat_df['trans_date'].dt.hour
+feat_df['tran_date'] = pd.to_datetime(feat_df['tran_date'])
+feat_df['trans_year'] = feat_df['tran_date'].dt.year
+feat_df['trans_month'] = feat_df['tran_date'].dt.month
+feat_df['trans_day'] = feat_df['tran_date'].dt.day
+feat_df['trans_day_of_week'] = feat_df['tran_date'].dt.dayofweek
+feat_df['trans_hour'] = feat_df['tran_date'].dt.hour
 
 # 3. Interaction Features
 feat_df['amount_status_interaction'] = feat_df['transaction_amount'] * feat_df['status_type_id']
@@ -118,10 +118,10 @@ feat_df = feat_df.join(average_amount_per_account, on='from_acc_id')
 
 # 5. Encode Categorical Features
 # Simple One Hot Encoding for transactional Type and Status
-# feat_df = pd.get_dummies(feat_df, columns=['trans_type_ID', 'status_type_id'], prefix=['type', 'status'], drop_first=True)
+# feat_df = pd.get_dummies(feat_df, columns=['tran_type_id', 'status_type_id'], prefix=['type', 'status'], drop_first=True)
 
 # 6. Fraud Ratio of each from_acc_id
-fraud_ratio = feat_df.groupby('from_acc_id')['is_fradulent'].mean().rename('fraud_ratio')
+fraud_ratio = feat_df.groupby('from_acc_id')['is_fraudulent'].mean().rename('fraud_ratio')
 
 feat_df = feat_df.join(fraud_ratio, on='from_acc_id')
 
@@ -141,10 +141,10 @@ import pickle
 feat_df = pd.read_parquet('/content/features_feat_df.parquet')
 
 # Define features and target
-skip_cols = ['transaction_id', 'transaction_amount', 'trans_date', 'from_acc_id',
-       'to_acc_id', 'is_fradulent']
+skip_cols = ['transaction_id', 'transaction_amount', 'tran_date', 'from_acc_id',
+       'to_acc_id', 'is_fraudulent']
 X = feat_df.drop(columns=skip_cols)
-y = feat_df['is_fradulent']
+y = feat_df['is_fraudulent']
 
 # Split the data into training and test sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -225,15 +225,15 @@ import xgboost as xgb
 # Define the Pydantic model for the request body
 class TransData(BaseModel):
     transaction_id: int
-    trans_type_ID: int
+    tran_type_id: int
     transaction_amount: int
-    trans_date: datetime
+    tran_date: datetime
     status_type_id: int
     from_acc_id: int
     to_acc_id: int
 
-    @validator('trans_type_ID')
-    def validate_trans_type_ID(cls, value):
+    @validator('tran_type_id')
+    def validate_tran_type_id(cls, value):
       trans_type_allowed_values = [1, 2]
       if value not in trans_type_allowed_values:
           raise ValueError(f"must be one of: {trans_type_allowed_values}")
@@ -255,7 +255,7 @@ def get_histoical_trans_df(from_acc_id):
 def generate_agg_feat_df(from_acc_id):
   hist_df = get_histoical_trans_df(from_acc_id)
   if not hist_df.empty:
-    fraud_ratio = hist_df.groupby('from_acc_id')['is_fradulent'].mean().rename('fraud_ratio').iloc[0]
+    fraud_ratio = hist_df.groupby('from_acc_id')['is_fraudulent'].mean().rename('fraud_ratio').iloc[0]
     total_transactions_per_account = hist_df.groupby('from_acc_id').size().rename('total_transactions').iloc[0]
     average_amount_per_account = hist_df.groupby('from_acc_id')['transaction_amount'].mean().rename('avg_amount_per_account').iloc[0]
   else:
@@ -276,12 +276,12 @@ def generate_features(df):
   feat_df['log_transaction_amount'] = np.log(feat_df['transaction_amount'] + 1)
 
   # 2. Transaction Date Features (Year, Month, Day of Week, Hour)
-  feat_df['trans_date'] = pd.to_datetime(feat_df['trans_date'])
-  feat_df['trans_year'] = feat_df['trans_date'].dt.year
-  feat_df['trans_month'] = feat_df['trans_date'].dt.month
-  feat_df['trans_day'] = feat_df['trans_date'].dt.day
-  feat_df['trans_day_of_week'] = feat_df['trans_date'].dt.dayofweek
-  feat_df['trans_hour'] = feat_df['trans_date'].dt.hour
+  feat_df['tran_date'] = pd.to_datetime(feat_df['tran_date'])
+  feat_df['trans_year'] = feat_df['tran_date'].dt.year
+  feat_df['trans_month'] = feat_df['tran_date'].dt.month
+  feat_df['trans_day'] = feat_df['tran_date'].dt.day
+  feat_df['trans_day_of_week'] = feat_df['tran_date'].dt.dayofweek
+  feat_df['trans_hour'] = feat_df['tran_date'].dt.hour
 
   # 3. Interaction Features
   feat_df['amount_status_interaction'] = feat_df['transaction_amount'] * feat_df['status_type_id']
@@ -293,7 +293,7 @@ def generate_features(df):
 
   # 5. Encode Categorical Features
   # Simple One Hot Encoding for transactional Type and Status
-  # feat_df = pd.get_dummies(feat_df, columns=['trans_type_ID', 'status_type_id'], prefix=['type', 'status'], drop_first=True)
+  # feat_df = pd.get_dummies(feat_df, columns=['tran_type_id', 'status_type_id'], prefix=['type', 'status'], drop_first=True)
 
   # 6. Fraud Ratio of each from_acc_id
   feat_df["fraud_ratio"] = fraud_ratio
@@ -302,7 +302,7 @@ def generate_features(df):
 
 def predict_fraud(trans_data):
 
-  skip_cols = ['transaction_id', 'transaction_amount', 'trans_date', 'from_acc_id', 'to_acc_id',]
+  skip_cols = ['transaction_id', 'transaction_amount', 'tran_date', 'from_acc_id', 'to_acc_id',]
 
   # converting dictionary to dataframe
   trans_df = pd.DataFrame(trans_data, index=[0])
@@ -328,9 +328,9 @@ def predict_fraud(trans_data):
   return is_fraudulent
 
 # test_trans_data = {'transaction_id': 465858,
-#  'trans_type_ID': 1,
+#  'tran_type_id': 1,
 #  'transaction_amount': 85951,
-#  'trans_date': '2025-01-01 00:00:01',
+#  'tran_date': '2025-01-01 00:00:01',
 #  'status_type_id': 1,
 #  'from_acc_id': 1840,
 #  'to_acc_id': 3094,
@@ -390,10 +390,10 @@ q_df.drop([skip_cols])
 
 skip_cols = ['transaction_id',
  'transaction_amount',
- 'trans_date',
+ 'tran_date',
  'from_acc_id',
  'to_acc_id',
- 'is_fradulent']
+ 'is_fraudulent']
 
 set(xgb_classifier.predict(sc.transform(q_df.drop(skip_cols, axis=1))))
 
