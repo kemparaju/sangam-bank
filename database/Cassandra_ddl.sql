@@ -42,6 +42,7 @@ CREATE TABLE users (
 	dob Date,
     address text,
     state text,
+	phone text,
     country text,
     pincode text,
     email text,
@@ -71,7 +72,8 @@ CREATE TABLE transactions (
 	tran_date Date,
     status_type_id int,
     from_acc_id int,
-    to_acc_id int
+    to_acc_id int,
+	is_fraudulent BOOLEAN
 );
 
 
