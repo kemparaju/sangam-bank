@@ -1,26 +1,16 @@
 <!-- <div class="login-container bg-light"> -->
-<div class="row d-md-none" style="margin-top: 10%">
+<div class="row d-md-none" style="margin-top: 10%;">
   <div class="col-12">
     <div class="center-image">
-      <img
-        src="assets/images/the-future.png"
-        width="300px"
-        height="200px"
-        alt=""
-      />
+      <img src="assets/images/the-future.png" width="300px" height="200px" alt="">
     </div>
   </div>
 </div>
 
 <div class="row login-container">
-  <div class="col-6 d-none d-md-block" style="background-color: #9e1b51">
+  <div class="col-6 d-none d-md-block" style="background-color: #9e1b51;">
     <div class="center-image">
-      <img
-        src="assets/images/the-future.png"
-        width="400px"
-        height="250px"
-        alt=""
-      />
+      <img src="assets/images/the-future.png" width="400px" height="250px" alt="">
     </div>
   </div>
   <div class="col-12 col-md-6">
@@ -46,10 +36,7 @@
                   />
                   <span hidden>User Email Id</span>
                   <small
-                    [hidden]="
-                      loginForm.controls['userEmailId'].valid ||
-                      loginForm.controls['userEmailId'].untouched
-                    "
+                    [hidden]="loginForm.controls['userEmailId'].valid || loginForm.controls['userEmailId'].untouched"
                     class="text-danger"
                   >
                     User Email Id required
@@ -66,10 +53,7 @@
                   />
                   <span hidden translate>Password</span>
                   <small
-                    [hidden]="
-                      loginForm.controls['password'].valid ||
-                      loginForm.controls['password'].untouched
-                    "
+                    [hidden]="loginForm.controls['password'].valid || loginForm.controls['password'].untouched"
                     class="text-danger"
                   >
                     Password is required
@@ -77,21 +61,13 @@
                 </label>
                 <div class="form-check">
                   <label class="form-check-label">
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      formControlName="remember"
-                    />
+                    <input type="checkbox" class="form-check-input" formControlName="remember" />
                     <span>Remember me</span>
                   </label>
                 </div>
               </div>
               <div class="m-3">
-                <button
-                  class="btn btn-primary w-100"
-                  type="submit"
-                  [disabled]="loginForm.invalid || isLoading"
-                >
+                <button class="btn btn-primary w-100" type="submit" [disabled]="loginForm.invalid || isLoading">
                   <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i>
                   <span translate>Login</span>
                 </button>
@@ -100,6 +76,5 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
 </div>

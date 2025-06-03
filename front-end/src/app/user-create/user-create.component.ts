@@ -6,25 +6,23 @@ import { HomeService } from '@app/home/home.service';
 @Component({
   selector: 'app-user-create',
   templateUrl: './user-create.component.html',
-  styleUrls: ['./user-create.component.scss'],
+  styleUrls: ['./user-create.component.scss']
 })
 export class UserCreateComponent {
   isLoading = false;
   userCreateForm!: FormGroup;
 
-  constructor(
-    private homeService: HomeService,
+  constructor(private homeService: HomeService,
     private alertService: AlertService,
-    private formBuilder: FormBuilder
-  ) {
-    this.createForm();
-  }
+    private formBuilder: FormBuilder) {
+      this.createForm();
+    }
 
   resetUserObj() {
     this.userCreateForm.reset();
   }
 
-  createUser() {
+  createUser () {
     this.isLoading = true;
     const userObj = {
       username: this.userCreateForm.value.userName,
@@ -36,24 +34,18 @@ export class UserCreateComponent {
       country: this.userCreateForm.value.country,
       pincode: this.userCreateForm.value.pincode,
       passwd: this.userCreateForm.value.password,
-      email: this.userCreateForm.value.userEmailId,
-    };
+      email: this.userCreateForm.value.userEmailId
+    }
 
-    this.homeService.createUser(userObj).subscribe(
-      (response: any) => {
-        this.isLoading = false;
-        this.userCreateForm.markAsPristine();
-        this.alertService.success('User created successfully', {
-          autoClose: true,
-        });
-      },
-      (error: any) => {
-        this.alertService.error('Error in creating the user', {
-          autoClose: true,
-        });
-        this.isLoading = false;
-      }
-    );
+    this.homeService.createUser(userObj).subscribe((response: any) => {
+      this.isLoading = false;
+      this.userCreateForm.markAsPristine();
+      this.alertService.success('User created successfully', {autoClose: true});
+    }, 
+    (error: any) => {
+      this.alertService.error('Error in creating the user', {autoClose: true});
+      this.isLoading = false;
+    });
   }
 
   private createForm() {

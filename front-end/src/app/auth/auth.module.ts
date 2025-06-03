@@ -10,15 +10,7 @@ import { LoginComponent } from './login.component';
 import { UserCreateComponent } from '../user-create/user-create.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    FormsModule,
-    NgbModule,
-    I18nModule,
-    AuthRoutingModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, FormsModule, NgbModule, I18nModule, AuthRoutingModule],
   declarations: [LoginComponent, UserCreateComponent],
 })
 export class AuthModule {}

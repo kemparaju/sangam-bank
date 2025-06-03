@@ -4,18 +4,18 @@ import { Observable, of } from 'rxjs';
 import { Credentials, CredentialsService } from './credentials.service';
 
 export interface LoginContext {
-  userId: number;
+  userId: number,
   username: string;
-  userTypeId: number;
-  genderId: number;
-  dob: string;
-  address: string;
-  state: string;
-  country: string;
-  pincode: string;
-  email: string;
+  userTypeId: number,
+  genderId: number,
+  dob: string,
+  address: string,
+  state: string,
+  country: string,
+  pincode: string,
+  email: string
   remember?: boolean;
-  token?: string;
+  token?: string
 }
 
 /**
@@ -42,12 +42,13 @@ export class AuthenticationService {
   //   this.credentialsService.setCredentials(data, context.remember);
   //   return of(data);
   // }
-
+  
   login(context: LoginContext) {
     context.token = '123456';
     // Replace by proper authentication call
     this.credentialsService.setCredentials(context, context.remember);
   }
+
 
   /**
    * Logs out the user and clear credentials.

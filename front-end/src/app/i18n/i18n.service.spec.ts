@@ -33,10 +33,7 @@ describe('I18nService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        I18nService,
-        { provide: TranslateService, useClass: MockTranslateService },
-      ],
+      providers: [I18nService, { provide: TranslateService, useClass: MockTranslateService }],
     });
 
     i18nService = TestBed.inject(I18nService);

@@ -13,9 +13,8 @@ import { env } from './.env';
 export const environment = {
   production: false,
   version: env['npm_package_version'] + '-dev',
-  // serverUrl: 'http://localhost:9080/',
-  serverUrl: 'https://apis-sangambank.apps.vp24-005.pic2.isv.ihost.com/',
-  // serverUrl: 'http://api-newroute-thefuture.apps.p1362.cecc.ihost.com/',
+  serverUrl: 'http://localhost:9080/',
+  // serverUrl: 'https://banking-api-server-bankingdemo.apps.cluster-01.generative-ai-power-demos.ibm.net/',
   defaultLanguage: 'en-US',
   supportedLanguages: ['en-US', 'fr-FR'],
 };

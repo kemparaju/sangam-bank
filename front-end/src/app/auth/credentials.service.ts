@@ -3,16 +3,16 @@ import { Injectable } from '@angular/core';
 export interface Credentials {
   // Customize received credentials here
   username: string;
-  userId: number;
-  userTypeId: number;
-  genderId: number;
-  dob: string;
-  address: string;
-  state: string;
-  country: string;
-  pincode: string;
-  email: string;
-  token?: string;
+  userId: number,
+  userTypeId: number,
+  genderId: number,
+  dob: string,
+  address: string,
+  state: string,
+  country: string,
+  pincode: string,
+  email: string
+  token?: string
 }
 
 const credentialsKey = 'credentials';
@@ -28,9 +28,7 @@ export class CredentialsService {
   private _credentials: Credentials | null = null;
 
   constructor() {
-    const savedCredentials =
-      sessionStorage.getItem(credentialsKey) ||
-      localStorage.getItem(credentialsKey);
+    const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
     if (savedCredentials) {
       this._credentials = JSON.parse(savedCredentials);
     }
@@ -41,8 +39,7 @@ export class CredentialsService {
    * @return True if the user is authenticated.
    */
   isAuthenticated(): boolean {
-    return true
-    // return !!this.credentials;
+    return !!this.credentials;
   }
 
   /**

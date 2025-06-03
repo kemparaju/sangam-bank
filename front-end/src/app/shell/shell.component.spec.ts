@@ -17,12 +17,7 @@ describe('ShellComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot(),
-        I18nModule,
-        NgbModule,
-        RouterTestingModule,
-      ],
+      imports: [TranslateModule.forRoot(), I18nModule, NgbModule, RouterTestingModule],
       providers: [
         { provide: AuthenticationService, useClass: MockAuthenticationService },
         { provide: CredentialsService, useClass: MockCredentialsService },
