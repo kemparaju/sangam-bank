@@ -3,7 +3,7 @@ numpy
 sklearn
 fastapi
 matplotlib
-seaborn
+# seaborn
 xgboost
 uvicorn
 psycopg2

@@ -116,15 +116,16 @@ func createuser(w http.ResponseWriter, r *http.Request) {
 	passwda := FNV32a(r.FormValue("passwd"))
 	passwd := strconv.FormatUint(uint64(passwda), 10)
 	email := r.FormValue("email")
+	phone := r.FormValue("phone")
 	var response = JsonResponse{}
 
 	db := setupDB()
 
 	printMessage("Inserting user into DB")
 
-	fmt.Println("Inserting new user with details: " + username + " and  " + user_type_id + " and  " + gender_id + " and  " + dob + " and  " + address + " and " + state + " and " + country + "and" + pincode)
+	fmt.Println("Inserting new user with details: " + username + " and  " + user_type_id + " and  " + gender_id + " and  " + dob + " and  " + address + " and " + state + " and " + country + " and " + pincode + " and " + phone)
 	var lastInsertID int
-	err := db.QueryRow("INSERT INTO users(user_id, username, user_type_id, gender_id, dob,address, state, country, pincode, email, passwd) VALUES(nextval('users_user_id_seq'), $1,$2,$3,$4,$5,$6,$7,$8,$9,$10) returning user_id;", username, user_type_id, gender_id, dob, address, state, country, pincode, email, passwd).Scan(&lastInsertID)
+	err := db.QueryRow("INSERT INTO users(user_id, username, user_type_id, gender_id, dob,address, state, country, pincode, email, passwd, phone) VALUES(nextval('users_user_id_seq'), $1,$2,$3,$4,$5,$6,$7,$8,$9,$10, $11) returning user_id;", username, user_type_id, gender_id, dob, address, state, country, pincode, email, passwd, phone).Scan(&lastInsertID)
 	checkErr(err)
 
 	response = JsonResponse{Type: "success", Message: "The user has been inserted successfully!"}
@@ -209,7 +210,7 @@ func accountTransfer(w http.ResponseWriter, r *http.Request) {
 
 	printMessage("Inserting user into DB")
 
-	fmt.Println("Inserting new transaction with details: " + from_acc_id + " and  " + to_acc_id + " and  " + transaction_amount)
+	fmt.Println("Inserting new transaction with details: " + from_acc_id + " and  " + to_acc_id + " and  " + transaction_amount + " and " + is_fraudulent)
 	var lastInsertID int
 	var nowInsertID int
 	var balance3 float64
