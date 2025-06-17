@@ -39,6 +39,7 @@ func main() {
 	router.HandleFunc("/getaccounts/", getAllAccounts).Methods("GET")
 	router.HandleFunc("/validatepass/", loginuser).Methods("POST")
 	router.HandleFunc("/trandetails/", gettransactionDetails).Methods("GET")
+	router.HandleFunc("/send-sms/", sendSMSHandler).Methods("POST")
 
 	fmt.Println("Server at 9080s")
 	handler := cors.Default().Handler(router)

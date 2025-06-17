@@ -4,6 +4,8 @@ from datetime import datetime, date, time
 import pandas as pd
 import numpy as np
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+
 from fraud_detection_model import predict_fraud
 import uvicorn
 
@@ -34,6 +36,15 @@ class TransData(BaseModel):
 
 # Initialize FastAPI app
 app = FastAPI()
+origins = ["*"]
+
+app.add_middleware(
+  CORSMiddleware,
+  allow_origins=origins,
+  allow_credentials=True,  # Required if you're using cookies or other credentials
+  allow_methods=["*"],  # Allow all HTTP methods
+  allow_headers=["*"]  # Allow all headers
+)
 
 # Define POST endpoint
 @app.post("/transaction/validate/")

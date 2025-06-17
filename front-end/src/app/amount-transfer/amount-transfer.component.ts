@@ -56,14 +56,24 @@ export class AmountTransferComponent {
       this.transactionAmountError = 'Transfer amount is greater than current balance';
 
     } else {
-      this.homeService.transferAmount(transferDetails).subscribe((response: any) => {
-        this.isLoading = false;
-        this.alertService.success('Transaction Successfull', {autoClose: true});
 
-      }, () => {
-        this.alertService.error('Error in transferring amount to beneficiary account', {autoClose: true});
+      this.homeService.checkForFraudulent(transferDetails).subscribe((response: any) => {
+        console.log("transaction details:", transferDetails);
+
+        // this.alertService.error("Fraudulent Transaction has been identified. Please authorize to complete the transaction")
+        console.log('Fraudulent response:', response);
+        // this.homeService.sendSMS().subscribe((response => {}));
         this.isLoading = false;
-      });
+          // this.homeService.transferAmount(transferDetails).subscribe((response: any) => {
+          //   this.isLoading = false;
+          //   this.alertService.success('Transaction Successfull', {autoClose: true});
+
+          // }, () => {
+          //   this.alertService.error('Error in transferring amount to beneficiary account', {autoClose: true});
+          //   this.isLoading = false;
+          // });
+      })
+
     }
   }
 

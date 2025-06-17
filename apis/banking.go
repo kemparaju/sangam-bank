@@ -7,9 +7,15 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"log"
 	"time"
+	"os"
 
 	_ "github.com/lib/pq"
+	"github.com/joho/godotenv"
+	"github.com/twilio/twilio-go"
+	openapi "github.com/twilio/twilio-go/rest/api/v2010"
+
 )
 
 type User struct {
@@ -47,6 +53,13 @@ type Bank struct {
 type Accounts struct {
 	Acct_id int
 }
+
+type SMSRequest struct {
+	To string `json:"to"`
+	Message string `json:"message"`
+}
+
+
 type JsonResponsew struct {
 	EmailId  string `json:"email_id"`
 	Password string `json:"passwd"`
@@ -252,7 +265,7 @@ func accountTransfer(w http.ResponseWriter, r *http.Request) {
 		checkErr(err6)
 	}
 
-	response = JsonResponse{Type: "success", Message: "The account has been created successfully!"}
+	response = JsonResponse{Type: "success", Message: "Transaction successfull!"}
 	json.NewEncoder(w).Encode(response)
 
 }
@@ -472,4 +485,43 @@ func gettransactionDetails(w http.ResponseWriter, r *http.Request) {
 	}
 	var response = JsonTransactionsResponse{Type: "success", Data: transactions}
 	json.NewEncoder(w).Encode(response)
+}
+
+
+func sendSMSHandler(w http.ResponseWriter, r *http.Request) {
+	envError := godotenv.Load()
+	if envError != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	var smsReq SMSRequest
+	err := json.NewDecoder(r.Body).Decode(&smsReq)
+	if err != nil {
+	http.Error(w, "Invalid request payload", http.StatusBadRequest)
+	return
+	}
+
+	accountSid := os.Getenv("TWILIO_ACCOUNT_SID")
+	authToken := os.Getenv("TWILIO_AUTH_TOKEN")
+	fromPhone := os.Getenv("TWILIO_PHONE_NUMBER")
+
+	client := twilio.NewRestClientWithParams(twilio.ClientParams{
+	Username: accountSid,
+	Password: authToken,
+	})
+
+	params := &openapi.CreateMessageParams{}
+	params.SetTo(smsReq.To)
+	params.SetFrom(fromPhone)
+	params.SetBody(smsReq.Message)
+
+	resp, err := client.Api.CreateMessage(params)
+	if err != nil {
+	http.Error(w, err.Error(), http.StatusInternalServerError)
+	return
+	}
+
+	json.NewEncoder(w).Encode(map[string]string{
+	"message_sid": *resp.Sid,
+	})
 }

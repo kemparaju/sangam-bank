@@ -48,6 +48,40 @@ export class HomeService {
     return this.httpClient.get(url, {});
   }
 
+  checkForFraudulent(transferObj: any): Observable<any> {
+    let url = 'http://localhost:8000/transaction/validate/'
+    console.log("Transaction Object:", transferObj);
+
+    transferObj = {
+        "transaction_id": 1,
+        "tran_type_id": 1,
+        "transaction_amount": 50,
+        "tran_date": "2025-06-03",
+        "status_type_id": 1,
+        "from_acc_id": 7,
+        "to_acc_id": 5
+    }
+
+    const transaction = {
+      from_acc_id : "4",
+      to_acc_id : "2",
+      transaction_amount : 100
+    }
+
+    // url = this.buildUrl(url, transferObj);
+    return this.httpClient.post(url, transferObj);
+  }
+
+  sendSMS(): Observable<any> {
+    let url = "http://localhost:9080/send-sms/"
+    let SMSObj = {
+      "to": "+919986730233",
+      "message": "We have noticed a fraudulent transaction on your Neo Bank account. If you are the one making the transaction, please log in to approve it"
+    }
+
+    return this.httpClient.post(url, SMSObj)
+  }
+
   transferAmount(transferObj: any): Observable<any> {
     // http://localhost:9080/transfer/?from_acc_id=2&to_acc_id=1&transaction_amount=2000
     let url = 'transfer/';

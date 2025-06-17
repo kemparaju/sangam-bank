@@ -20,7 +20,7 @@ def get_histoical_trans_df(from_acc_id):
   connection = psycopg2.connect(database="bankingref", user="", password="", host="localhost", port=5432)
   cursor = connection.cursor()
 
-  cursor.execute(f"SELECT * FROM transactions where from_acc_id={int(from_acc_id)}")
+  cursor.execute(f"SELECT * FROM transactions where from_acc_id={int(from_acc_id)} and tran_type_id=1")
   hist_df = pd.DataFrame(cursor.fetchall(), columns=[desc[0] for desc in cursor.description])
   cursor.close()
 
