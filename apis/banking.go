@@ -270,6 +270,28 @@ func accountTransfer(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func storeFraudulentTransactions(w http.ResponseWriter, r *http.Request) {
+
+	from_acc_id := r.FormValue("from_acc_id")
+	to_acc_id := r.FormValue("to_acc_id")
+	transaction_amount := r.FormValue("transaction_amount")
+	is_fraudulent := r.FormValue("is_fraudulent")
+
+	var response = JsonResponse{}
+
+	db := setupDB()
+
+	fmt.Println("Inserting new transaction with details: " + from_acc_id + " and  " + to_acc_id + " and  " + transaction_amount)
+	var lastInsertID int
+	dt := time.Now()
+	err1 := db.QueryRow("INSERT INTO fraudulent_transactions(transaction_id, tran_type_id, transaction_amount, tran_date, status_type_id,from_acc_id,to_acc_id,is_fraudulent) VALUES(nextval('transactions_transaction_id_seq'), $1,$2,$3,$4,$5,$6,$7) returning transaction_id;", 1, transaction_amount, dt.Format("01-02-2006"), 1, from_acc_id, to_acc_id, is_fraudulent).Scan(&lastInsertID)
+	checkErr(err1)
+
+	response = JsonResponse{Type: "success", Message: "Fraudulent Transaction has been saved"}
+	json.NewEncoder(w).Encode(response)
+
+}
+
 func checkbalance(w http.ResponseWriter, r *http.Request) {
 	db := setupDB()
 	acc_id := r.FormValue("acc_id")

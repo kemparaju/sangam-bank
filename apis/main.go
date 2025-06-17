@@ -29,6 +29,7 @@ func main() {
 	router.HandleFunc("/accsummary/", accountsummary).Methods("GET")
 	router.HandleFunc("/getbalance/", checkbalance).Methods("GET")
 	router.HandleFunc("/transfer/", accountTransfer).Methods("GET")
+	router.HandleFunc("/store/fraudulent/transactions", storeFraudulentTransactions).Methods("GET")
 
 	router.HandleFunc("/statusdesc/", getstatusdesc).Methods("GET")
 	router.HandleFunc("/trantypedesc/", getTransactiondesc).Methods("GET")
