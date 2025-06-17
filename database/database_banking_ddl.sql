@@ -86,7 +86,6 @@ CREATE TABLE transactions (
     status_type_id integer,
     from_acc_id integer,
     to_acc_id integer,
-    is_fraudulent boolean
 );
 create table user_pwd(usr_id int , passwd VARCHAR(500));
 ALTER TABLE user_pwd 
@@ -102,4 +101,27 @@ ALTER TABLE transactions
     ADD CONSTRAINT fk_from_acc_id FOREIGN KEY (from_acc_id) REFERENCES accounts (acc_id);
 
 ALTER TABLE transactions
+    ADD CONSTRAINT fk_to_acc_id FOREIGN KEY (to_acc_id) REFERENCES accounts (acc_id);
+
+CREATE TABLE fraudulent_transactions (
+	transaction_id serial PRIMARY KEY,
+	Tran_type_ID integer ,
+	transaction_amount double precision,
+	tran_date Date,
+    status_type_id integer,
+    from_acc_id integer,
+    to_acc_id integer,
+    is_fraudulent boolean
+);
+
+ALTER TABLE fraudulent_transactions
+    ADD CONSTRAINT fk_tran_type FOREIGN KEY (Tran_type_ID) REFERENCES transactiontype (Tran_type_ID);
+
+ALTER TABLE fraudulent_transactions
+    ADD CONSTRAINT fk_status_id FOREIGN KEY (status_type_id) REFERENCES status_type (status_type_id);
+
+ALTER TABLE fraudulent_transactions
+    ADD CONSTRAINT fk_from_acc_id FOREIGN KEY (from_acc_id) REFERENCES accounts (acc_id);
+
+ALTER TABLE fraudulent_transactions
     ADD CONSTRAINT fk_to_acc_id FOREIGN KEY (to_acc_id) REFERENCES accounts (acc_id);

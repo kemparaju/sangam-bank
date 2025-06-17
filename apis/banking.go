@@ -215,7 +215,7 @@ func accountTransfer(w http.ResponseWriter, r *http.Request) {
 	from_acc_id := r.FormValue("from_acc_id")
 	to_acc_id := r.FormValue("to_acc_id")
 	transaction_amount := r.FormValue("transaction_amount")
-	is_fraudulent := r.FormValue("is_fraudulent")
+	// is_fraudulent := r.FormValue("is_fraudulent")
 
 	var response = JsonResponse{}
 
@@ -223,7 +223,7 @@ func accountTransfer(w http.ResponseWriter, r *http.Request) {
 
 	printMessage("Inserting user into DB")
 
-	fmt.Println("Inserting new transaction with details: " + from_acc_id + " and  " + to_acc_id + " and  " + transaction_amount + " and " + is_fraudulent)
+	fmt.Println("Inserting new transaction with details: " + from_acc_id + " and  " + to_acc_id + " and  " + transaction_amount)
 	var lastInsertID int
 	var nowInsertID int
 	var balance3 float64
@@ -231,7 +231,7 @@ func accountTransfer(w http.ResponseWriter, r *http.Request) {
 	balance3, errfloat := strconv.ParseFloat(transaction_amount, 64)
 	checkErr(errfloat)
 	//currentTime := time.Now()
-	err1 := db.QueryRow("INSERT INTO transactions(transaction_id, tran_type_id, transaction_amount, tran_date, status_type_id,from_acc_id,to_acc_id, is_fraudulent) VALUES(nextval('transactions_transaction_id_seq'), $1,$2,$3,$4,$5,$6) returning transaction_id;", 1, transaction_amount, dt.Format("01-02-2006"), 1, from_acc_id, to_acc_id).Scan(&lastInsertID)
+	err1 := db.QueryRow("INSERT INTO transactions(transaction_id, tran_type_id, transaction_amount, tran_date, status_type_id,from_acc_id,to_acc_id) VALUES(nextval('transactions_transaction_id_seq'), $1,$2,$3,$4,$5,$6) returning transaction_id;", 1, transaction_amount, dt.Format("01-02-2006"), 1, from_acc_id, to_acc_id).Scan(&lastInsertID)
 	err2 := db.QueryRow("INSERT INTO transactions(transaction_id, tran_type_id, transaction_amount, tran_date, status_type_id,from_acc_id,to_acc_id) VALUES(nextval('transactions_transaction_id_seq'), $1,$2,$3,$4,$5,$6) returning transaction_id;", 2, transaction_amount, dt.Format("01-02-2006"), 1, from_acc_id, to_acc_id).Scan(&nowInsertID)
 	checkErr(err1)
 	checkErr(err2)
