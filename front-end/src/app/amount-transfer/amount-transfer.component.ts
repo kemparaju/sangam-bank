@@ -60,9 +60,9 @@ export class AmountTransferComponent {
       this.homeService.checkForFraudulent(transferDetails).subscribe((response: any) => {
         console.log("transaction details:", transferDetails);
 
-        // this.alertService.error("Fraudulent Transaction has been identified. Please authorize to complete the transaction")
+        this.alertService.error("Fraudulent Transaction has been identified. Please authorize to complete the transaction")
         console.log('Fraudulent response:', response);
-        // this.homeService.sendSMS().subscribe((response => {}));
+        this.homeService.sendSMS().subscribe((response => {}));
         this.isLoading = false;
           // this.homeService.transferAmount(transferDetails).subscribe((response: any) => {
           //   this.isLoading = false;

@@ -56,10 +56,10 @@ export class HomeService {
         "transaction_id": 1,
         "tran_type_id": 1,
         "transaction_amount": 50,
-        "tran_date": "2025-06-03",
+        "tran_date": new Date().toISOString(),
         "status_type_id": 1,
-        "from_acc_id": 7,
-        "to_acc_id": 5
+        "from_acc_id": transferObj.from_acc_id,
+        "to_acc_id": transferObj.to_acc_id
     }
 
     const transaction = {
@@ -75,7 +75,7 @@ export class HomeService {
   sendSMS(): Observable<any> {
     let url = "http://localhost:9080/send-sms/"
     let SMSObj = {
-      "to": "+919986730233",
+      "to": "+917349079468",
       "message": "We have noticed a fraudulent transaction on your Neo Bank account. If you are the one making the transaction, please log in to approve it"
     }
 
