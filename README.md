@@ -1,5 +1,7 @@
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FIBM%2Fsangam-bank&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
+![image](https://github.com/user-attachments/assets/e4faa434-22b9-4935-b348-a66304409c94)
+
 Sangam Bank imitates core and digital banking elements. This kind of application is necessary since it would be time and resource intensive to demonstrate the capabilities of the platform by utilising a real core banking/digital banking application. The suggested architecture contains the components that are most frequently utilised in current core and online banking apps.
 
 The application's core banking module will consist of a UI for core banking services, AMQ streams for recording stream data, and an API application reading data from AMQ into the postgresql database. The digital banking module is an Android/iOS application that connects to or consumes the Cassandra database. The core and digital banking database components will be synchronised.
